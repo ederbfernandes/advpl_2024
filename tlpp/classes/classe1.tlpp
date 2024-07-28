@@ -1,0 +1,32 @@
+#include 'tlpp-core.th'
+
+
+Class MyClass
+
+	private data nValue       as numeric
+	private data cValue       as character
+
+	public method New()
+	public method getNumber() as numeric
+	public method getText()   as character
+	public method setNumber(n)
+	public method setText(c)
+
+EndClass
+
+Method New() class MyClass
+Return Self
+
+Method getNumber() as numeric class MyClass
+Return ::nValue
+
+Method getText() as character class MyClass
+Return ::cValue
+
+Method setNumber(n) class MyClass
+	::nValue := n
+Return
+
+Method setText(c) class MyClass
+	::cValue := c
+Return

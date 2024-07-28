@@ -1,0 +1,19 @@
+#include 'tlpp-core.th'
+
+Function u_verificaFuncao()
+
+	local lFound    as logical
+	local cFunction as character
+
+	//exemplo de função que existe
+
+	cFunction := "tlpp.environment.getIncludesTLPP"
+
+	lFound := tlpp.ffunc( cFunction )  // Se compilado em um fonte TLPP ou PRW = .T. (verdadeiro pois a função existe)
+	ConOut( 'Function [' + cFunction + '] ' + iif(lFound,'','NOT ') + 'found!' )
+
+	lFound := tlpp.ffunc( cFunction, .T. )  // Se compilado em um fonte TLPP ou PRW = .T. (verdadeiro pois a função existe)
+	ConOut( 'Function [' + cFunction + '] (AdvPL compatibility) ' + iif(lFound,'','NOT ') + 'found!' )
+
+
+Return lFound

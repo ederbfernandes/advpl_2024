@@ -1,0 +1,36 @@
+#include 'tlpp-core.th'
+
+/*/{Protheus.doc} u_check1
+TESTE DE CHECAGEM DE FUNCAO
+@type function
+@version 1.0 
+@author EDER.FERNANDES
+@since 7/28/2024
+@return variant, NIL
+/*/
+function u_check1()
+
+    local dVar := date() as date
+    local cVar := dtos(dVar) as character 
+    
+    u_f2(dVar,cVar)
+  //  u_f2(cVar,dVar)
+
+return 0
+
+
+/*/{Protheus.doc} u_f2
+FUNCAO DO TESTE DE CHECAGEM 
+@type function
+@version 1.0 
+@author EDER.FERNANDES
+@since 7/28/2024
+@param dVar, date, DATA DE EXECUCAO
+@param cVar, character, PARAMETRO DE TEXTO
+@return variant, NIL
+/*/
+function u_f2(dVar as date,cVar as character)
+    
+    FwAlertInfo('cVar é ' + Valtype(cVar))
+    FwAlertInfo('dVar é ' + Valtype(dVar))
+return

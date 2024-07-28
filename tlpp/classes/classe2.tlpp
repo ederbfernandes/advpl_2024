@@ -1,0 +1,11 @@
+#include 'tlpp-core.th'
+
+
+function u_classe2()
+	local  oMyObj as object
+
+	//oMyObj := MyClass():New()
+    oMyObj := MyClass():New()
+
+
+return

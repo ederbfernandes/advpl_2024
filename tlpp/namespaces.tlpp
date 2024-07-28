@@ -1,0 +1,27 @@
+#include 'tlpp-core.th'
+
+namespace exemplo
+
+
+User Function testeNamespace()
+	local cName as character
+
+	cName := 'testeNamespace'
+	conout (cName)
+
+	u_testeNamespace2()
+Return
+
+
+
+User Function testeNamespace2() as logical
+
+	local cName2 as character
+	local lRet   as logical
+	cName2 := 'testeNamespace2'
+	conout(cName2)
+
+    lRet := .T.
+
+
+Return lRet
