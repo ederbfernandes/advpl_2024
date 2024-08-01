@@ -1,0 +1,25 @@
+#include 'tlpp-core.th'
+
+
+/*/{Protheus.doc} u_exemplodeFormatStr
+funcao teste
+@type function
+@version 1.0 
+@author eder.fernandes
+@since 7/29/2024
+@return variant, nil
+/*/
+function u_exemplodeFormatStr()
+	local aAreaBackup           := FwGetArea() as array
+	Local cFuncionarioNome      := "Eder"      as character
+	Local cFuncionarioSobreNome := "Fernandes" as character
+	Local cMensagemQueSeraExibida              as character
+	Local dDataDeHoje           := date()      as date
+
+    set date british 
+    set century on 
+	cMensagemQueSeraExibida := FormatStr('O nome do funcionário é %c e o sobrenome é %c e a data de hoje é %d', {cFuncionarioNome,cFuncionarioSobreNome,dDataDeHoje})
+
+
+	FwRestArea(aAreaBackup)
+Return
