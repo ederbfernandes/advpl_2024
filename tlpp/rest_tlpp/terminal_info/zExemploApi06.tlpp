@@ -1,0 +1,93 @@
+//Bibliotecas
+#Include "tlpp-core.th"
+#Include "tlpp-rest.th"
+
+//Declaração da namespace
+Namespace atualizacaoParcial
+
+//Constantes
+#Define CRLF Chr(13) + Chr(10) //Carriage Return Line Feed
+  
+/*/{Protheus.doc} User Function WSGrupoProdNovAtualizaParcialRegistro
+Exemplo de WS para atualizar um grupo de produto conforme body
+@type  Function
+@author Atilio
+@since 26/03/2024
+@obs Exemplo de conteúdo a vir no body
+    * 1: Para campos do tipo Numérico, informe o valor sem usar as aspas
+    * 2: Para campos do tipo Data, informe uma string no padrão 'YYYY-MM-DD'
+
+    {
+        "grupo": "conteudo",
+        "desc": "conteudo",
+        "proori": "conteudo",
+        "status": "conteudo"
+    }
+/*/
+  
+@Patch("WsGrupoProdNov/atualizacao/parcial/unico/")
+User Function WSGrupoProdNovAtualizaParcialRegistro()
+    Local jResponse         := JsonObject():New()     As Json
+    Local jBody                                       As Json
+    Local cAliasWS          := 'SBM'                  As Character
+    Local cBody             := oRest:getBodyRequest() As Character
+
+    //Aciona a preparação do ambiente
+    preparaAmbiente.u_zPreparaAmbienteRest()
+
+    //Se veio um body
+    If ! Empty(cBody)
+
+        //Busca os dados que o usuário informou
+        jBody := JsonObject():New()
+        jBody:fromJson(cBody)
+    
+        //Caso haja conteúdo
+        If jBody != Nil .And. ! Empty(jBody:GetJsonObject('grupo'))
+    
+            DbSelectArea(cAliasWS)
+            (cAliasWS)->(DbSetOrder(1))
+
+            //Se não encontrar o registro
+            If ! (cAliasWS)->(MsSeek(FWxFilial(cAliasWS) + jBody:GetJsonObject('grupo') ))
+                oRest:setStatusCode(500)
+                jResponse['errorId']  := 'ALT004'
+                jResponse['error']    := 'Grupo nao encontrado'
+                jResponse['solution'] := 'Codigo do Grupo nao encontrado na tabela ' + cAliasWS + ', portanto nao pode ser alterado'
+    
+            //Define o retorno
+            Else
+
+                //Atualiza somente os campos de procedência e status
+                //Obs.: Evite usar RecLock em tabela padrão, esse aqui é apenas um exemplo contextualizando
+                RecLock("SBM", .F.)
+                    If ! Empty(jBody:GetJsonObject('proori'))
+                        SBM->BM_PROORI := jBody:GetJsonObject('proori')
+                    EndIf
+
+                    If ! Empty(jBody:GetJsonObject('status'))
+                        SBM->BM_STATUS := jBody:GetJsonObject('status')
+                    EndIf
+                SBM->(MsUnlock())
+                
+                jResponse['note']     := 'Registro alterado parcialmente com sucesso'
+            EndIf
+        Else
+            //Define o retorno para o WebService
+            oRest:setStatusCode(500)
+            jResponse['errorId']  := 'ALT003'
+            jResponse['error']    := 'Falha na conversao string para JSON e ou codigo do grupo vazio'
+            jResponse['solution'] := 'Nao foi possivel capturar o Body e transformar em JSON, contate o Administrador ou o codigo do grupo informado esta vazio'
+        EndIf
+    
+    Else
+        oRest:setStatusCode(500)
+        jResponse['errorId']  := 'NOV001'
+        jResponse['error']    := 'Body vazio'
+        jResponse['solution'] := 'Informe o Body da requisicao'
+    EndIf
+  
+    //Encerra retornando o JSON
+    oRest:setKeyHeaderResponse('Content-Type','application/json')
+    oRest:setResponse(jResponse:toJSON())
+Return

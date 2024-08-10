@@ -1,0 +1,26 @@
+//Bibliotecas
+#Include "tlpp-core.th"
+#Include "tlpp-rest.th"
+
+//Declaração da namespace
+Namespace preparaAmbiente
+  
+/*/{Protheus.doc} User Function zPreparaAmbienteRest
+Exemplo de como fazer a preparação do ambiente direto via código fonte
+@type  Function
+@author Atilio
+@since 26/03/2024
+/*/
+  
+User Function zPreparaAmbienteRest(cCodigoEmpresa as Character, cCodigoFilial as Character,cLoginUsuario as Character, cLoginSenha)
+   
+    Local cLoginUsuario  := "Administrador" As Character
+    Local cLoginSenha    := "123"              As Character
+    default cCodigoEmpresa := '99'
+    default cCodigoFilial  := '01'
+    //Prepara o ambiente caso ele não esteja preparado
+    If Select("SX2") <= 0
+		    RPCSetEnv(cCodigoEmpresa, cCodigoFilial, /*cLoginUsuario*/, /*cLoginSenha*/)
+    EndIf
+
+Return

@@ -1,0 +1,56 @@
+# include 'tlpp-core.th'
+# include 'tlpp-rest.th'
+
+namespace geral.core
+
+
+@Get("/geral/buscaFilial")
+Function u_buscaFilial() as logical
+	Local jPath                           as Json
+	Local jResponse := JsonObject():New() as Json
+	Local cEmpresaLogin                   as character
+	Local cFilialLogin                    as character
+	Local aEmpresas                       as array
+	Local nContaEmpresa                   as integer
+
+	jPath := JsonObject():New()
+	jPath := oRest:getQueryRequest()
+
+	cEmpresaLogin := jPath:GetJsonObject('_cEmpresa')
+	cFilialLogin  := jPath:GetJsonObject('_cFilial' )
+
+	preparaAmbiente.u_zPreparaAmbienteRest( cEmpresaLogin, cFilialLogin )
+	//Busca os dados que o usuário informou
+	//Caso haja conteúdo
+	If jPath != Nil
+		aEmpresas := FwLoadSm0()
+
+		jResponse['objects'] := {}
+
+		If Len(aEmpresas) == 0
+			oRest:setStatusCode(500)
+			jResponse['errorId']  := 'FIL01'
+			jResponse['error']    := 'Registro(s) não encontrado(s)'
+			jResponse['solution'] := 'A consulta de registros não retornou nenhuma informação'
+		Else
+
+			for nContaEmpresa := 1 to Len(aEmpresas)
+
+				jRegistro                := JsonObject():New()
+				jRegistro[ 'filial' ]    := aEmpresas[nContaEmpresa,2]
+				jRegistro[ 'descricao' ] := aEmpresas[nContaEmpresa,7]
+
+				aAdd(jResponse['objects'], jRegistro)
+				FreeObj(jRegistro)
+
+			next nContaEmpresa
+		Endif
+	else
+		oRest:setStatusCode(500)
+		jResponse['errorId']  := 'FIL02'
+		jResponse['error']    := 'Objeto vazio'
+		jResponse['solution'] := 'Falha ao executar, contate o Administrador'
+	Endif
+	oRest:setKeyHeaderResponse('Content-Type','application/json')
+	oRest:setResponse(jResponse:toJSON())
+Return .T.

@@ -1,0 +1,12 @@
+#Include 'tlpp-core.th'
+#Include 'tlpp-rest.th'
+
+
+
+function u_onStart()
+
+	local lOk   := .t.
+
+
+
+Return lOk

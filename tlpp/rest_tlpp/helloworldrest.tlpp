@@ -19,5 +19,6 @@ function u_getQueryUser()
     cUser := jQuery[ 'user' ]
   endif
 
+
   processGetUser( cUser )
 return 

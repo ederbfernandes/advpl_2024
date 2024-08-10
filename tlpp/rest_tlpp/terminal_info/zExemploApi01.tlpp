@@ -1,0 +1,60 @@
+//Bibliotecas
+#Include "tlpp-core.th"
+#Include "tlpp-rest.th"
+
+//Declaração da namespace
+Namespace usandoGetComum
+  
+/*/{Protheus.doc} User Function WSGrupoProdNovGetUnico
+Exemplo de WS para buscar um grupo de produto conforme código
+@type  Function
+@author Atilio
+@since 26/03/2024
+@obs Parâmetros a receber na requisição:
+    id = Código do Grupo de Produtos
+/*/
+  
+@Get("WsGrupoProdNov/get/unico/")
+User Function WSGrupoProdNovGetUnico()
+    Local jResponse := JsonObject():New() As Json
+    Local jPath                           As Json
+    Local cAliasWS  := 'SBM'              As Character
+
+    //Aciona a preparação do ambiente
+    preparaAmbiente.u_zPreparaAmbienteRest()
+
+    //Busca os dados que o usuário informou
+    jPath := JsonObject():New()
+    jPath := oRest:getQueryRequest()
+  
+    //Caso haja conteúdo e não esteja vazio o ID
+    If jPath != Nil .And. ! Empty(jPath:GetJsonObject('id'))
+  
+        DbSelectArea(cAliasWS)
+        (cAliasWS)->(DbSetOrder(1))
+  
+        //Se não encontrar o registro
+        If ! (cAliasWS)->(MsSeek(FWxFilial(cAliasWS) + jPath:GetJsonObject('id') ))
+            oRest:setStatusCode(500)
+            jResponse['errorId']  := 'ID002'
+            jResponse['error']    := 'ID não encontrado'
+            jResponse['solution'] := 'Código ID não encontrado na tabela ' + cAliasWS + ', informe outro código'
+  
+        //Define o retorno
+        Else
+            jResponse['grupo'] := (cAliasWS)->BM_GRUPO 
+            jResponse['desc'] := (cAliasWS)->BM_DESC 
+        EndIf
+  
+    //Do contrário, irá retornar uma mensagem que não foi encontrado
+    Else
+        oRest:setStatusCode(500)
+        jResponse['errorId']  := 'ID001'
+        jResponse['error']    := 'ID vazio'
+        jResponse['solution'] := 'Informe o ID'
+    EndIf
+  
+    //Encerra retornando o JSON
+    oRest:setKeyHeaderResponse('Content-Type','application/json')
+    oRest:setResponse(jResponse:toJSON())
+Return
