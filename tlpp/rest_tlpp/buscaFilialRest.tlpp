@@ -25,7 +25,7 @@ Function u_buscaFilial() as logical
 	If jPath != Nil
 		aEmpresas := FwLoadSm0()
 
-		jResponse['objects'] := {}
+		jResponse['items'] := {}
 
 		If Len(aEmpresas) == 0
 			oRest:setStatusCode(500)
@@ -40,7 +40,7 @@ Function u_buscaFilial() as logical
 				jRegistro[ 'filial' ]    := aEmpresas[nContaEmpresa,2]
 				jRegistro[ 'descricao' ] := aEmpresas[nContaEmpresa,7]
 
-				aAdd(jResponse['objects'], jRegistro)
+				aAdd(jResponse['items'], jRegistro)
 				FreeObj(jRegistro)
 
 			next nContaEmpresa

@@ -1,0 +1,14 @@
+#include 'totvs.ch'
+
+
+
+user function dbselect()
+
+	rpcsetenv('99','01')
+
+	dbselectarea('ZAY')
+
+	ZAY->(DBCLOSEAREA())
+
+
+Return
