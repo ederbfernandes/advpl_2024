@@ -1,0 +1,21 @@
+#include 'tlpp-core.th'
+
+
+
+
+
+
+Function u_validacodigolojacliente()
+	Local cCodigo as character
+	Local cLoja   as character
+	Local lRet    as logical
+
+
+
+
+
+
+Return
+
+
+
